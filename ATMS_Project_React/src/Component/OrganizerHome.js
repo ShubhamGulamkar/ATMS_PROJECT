@@ -1,5 +1,23 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 export default function OrganizerHome(){
+
+  const [organizer,setOrganizer]=useState([]);
+  useEffect(()=>{
+
+    const userid=JSON.parse(localStorage.getItem("loggedUser"));
+    console.log(userid);
+    fetch("http://localhost:8080/getOrganizer?user_id="+userid.user_id)
+    .then(resp=>resp.json())
+    .then(obj=>{
+      console.log(obj);
+
+      localStorage.setItem("loggedOrganizer", JSON.stringify(obj))
+      setOrganizer(obj);
+    })
+
+  },[]);
+
 
 return (
     <div>
@@ -28,6 +46,7 @@ return (
         </div>
       </nav>
     <h1>Organizer Home</h1>
+    <h3>WELCOME {organizer.organization_name}</h3>
 
     </div>
 )

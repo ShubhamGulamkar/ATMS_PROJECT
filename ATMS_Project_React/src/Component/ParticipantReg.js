@@ -1,4 +1,4 @@
-import {useReducer , useState} from "react";
+import {useReducer , useState, useEffect} from "react";
 
 function ParticipantReg()
 {
@@ -33,6 +33,15 @@ function ParticipantReg()
 
     const[state ,dispatch] = useReducer(reducer,init);
     const[pwdtype,setPwdtype]=useState("password");
+    const [allque, setAllque] = useState([]);
+
+    //To fetch question List
+    useEffect(()=>{
+        fetch("http://localhost:8080/getQueList")
+        .then(resp => resp.json()) 
+        .then(que => setAllque(que))
+        }, []);
+
 
     const validateData = (name , value) => {
         let valid = false;
@@ -237,9 +246,14 @@ function ParticipantReg()
                     <div className="row">
                         <div className="col-md-12">
                             <label htmlFor="question_id"> Select Security Que: </label>
-                            <input type="number" name="question_id" className="form-control"
-                                onChange={(e) => handleChange("question_id", e.target.value)} />
-
+                            <select name="question_id" className="form-select" onChange={(e) => handleChange("question_id", e.target.value)} > 
+                            <option>Select Security Question</option>
+                            {
+                                allque.map(que => {
+                                            return <option key={que.question_id} value={que.question_id}>{que.question}</option>
+                                            })
+                            }
+                            </select>
                             <div className="error-msg"> {state.question_id.error}</div>
                         </div>
                     </div>

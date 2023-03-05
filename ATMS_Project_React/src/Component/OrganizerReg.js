@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 function OrganizerReg(){
 
@@ -8,10 +8,12 @@ function OrganizerReg(){
         email: { value: "", touched: false, valid: false, error: "" },
         city: { value: "", touched: false, valid: false, error: "" },
         mobile: { value: "", touched: false, valid: false, error: "" },
+        question_id: { value: "", touched: false, valid: false, error: "" },
+        answer: { value: "", touched: false, valid: false, error: "" },
         user_name: { value: "", touched: false, valid: false, error: "" },
         password: { value: "", touched: false, valid: false, error: "" },
-        // confirmpassword: { value: "", touched: false, valid: false, error: "" },
-        status:0,
+        //confirmpassword: { value: "", touched: false, valid: false, error: "" },
+        //status:0,
         formvalid: false
     }
 
@@ -22,7 +24,8 @@ function OrganizerReg(){
             case 'update':
                 const { name, value, touched, valid, error, formvalid } = action.data
                 //console.log(formvalid)
-                return { ...state, [name]: { value, touched, valid, error }, formvalid }
+                return { ...state, [name]: value, formvalid }
+                //return { ...state, [name]: { value, touched, valid, error }, formvalid }
 
             case 'reset':
                 return init;
@@ -32,6 +35,15 @@ function OrganizerReg(){
 
     const [state, dispatch] = useReducer(reducer, init);
     const [pwdtype, setPwdtype] = useState("password");
+    const [allque, setAllque] = useState([]);
+
+    //To fetch question List
+    useEffect(()=>{
+                    fetch("http://localhost:8080/getQueList")
+                    .then(resp => resp.json()) 
+                    .then(que => setAllque(que))
+                    }, []);
+
 
 
     const validateData = (name, value) => {
@@ -61,16 +73,16 @@ function OrganizerReg(){
                     error = "Password invalid"
                 }
                 break;
-            // case 'confirmpassword':
-            //     if (state.password.value === value) {
-            //         valid = true;
-            //         error = "";
-            //     }
-            //     else {
-            //         valid = false;
-            //         error = "Passwords do not match"
-            //     }
-            //     break;
+            case 'confirmpassword':
+                if (state.password.value === value) {
+                    valid = true;
+                    error = "";
+                }
+                else {
+                    valid = false;
+                    error = "Passwords do not match"
+                }
+                break;
 
         }
         return { valid, error };
@@ -105,6 +117,26 @@ function OrganizerReg(){
             }
         }
         dispatch({ type: 'update', data: { name, value, touched: true, valid, error, formvalid } })
+    }
+
+    const sendData = (e) => {
+        e.preventDefault();
+        console.log(state);
+        //oject for REST Api 
+        const reqOptions = {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(state)
+            // body: JSON.stringify({organization_name:state.organization_name.value, registration_no:state.registration_no.value,
+            //                         email:state.email.value, city:state.city.value, mobile:state.mobile.value, user_name:state.user_name.value, 
+            //                         password:state.password.value
+            //                     })
+        
+        }
+    
+        fetch("http://localhost:8080/regOrganizer", reqOptions)
+        .then(resp => resp.text())
+        alert("Account req raised");
     }
 
     return(
@@ -157,7 +189,32 @@ function OrganizerReg(){
                             <input type="text" name="city" className="form-control"
                                 onChange={(e) => handleChange("city", e.target.value)} />
 
-                            <div className="error-msg"> {state.mobile.error}</div>
+                            <div className="error-msg"> {state.city.error}</div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-md-12">
+                            {/* <label htmlFor="question_id"> Select Security Que: </label> */}
+                            <select name="question_id" className="form-select" onChange={(e) => handleChange("question_id", e.target.value)} > 
+                            
+                            <option>Select Security Question</option>
+                            {   allque.map(que => {
+                                            return <option key={que.question_id} value={que.question_id}>{que.question}</option>
+                                            })
+                            }
+                            </select>
+                            <div className="error-msg"> {state.question_id.error}</div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-md-12">
+                            <label htmlFor="answer"> Enter answer: </label>
+                            <input type="text" name="answer" className="form-control"
+                                onChange={(e) => handleChange("answer", e.target.value)} />
+
+                            <div className="error-msg"> {state.answer.error}</div>
                         </div>
                     </div>
 
@@ -172,7 +229,7 @@ function OrganizerReg(){
                         <div className="col-md-12">
                             <label htmlFor="password"> Password : </label>
                             <div className="input-group">
-                                <input type={pwdtype} name="password" className="form-control" placeholder="Password" />
+                                <input type={pwdtype} name="password" className="form-control" onChange={(e) => handleChange("password", e.target.value)} placeholder="Password" />
                                 <button type="button" className="btn btn-primary" onClick={() => { setPwdtype(pwdtype === "password" ? "text" : "password") }} >
                                     {pwdtype === "password" ? <i className="fa fa-eye-slash" /> : <i className="fa fa-eye" />}
                                 </button>
@@ -190,7 +247,7 @@ function OrganizerReg(){
                         </div>
                     </div> */}
                     <div className="mb-3">
-                        <button type="submit" disabled={state.formvalid}>Create Account</button>  
+                        <button type="submit" onClick={(e)=>{sendData(e)}} >Create Account</button>  
                     </div>
                 </form>
                 {JSON.stringify(state)}

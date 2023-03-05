@@ -69,4 +69,8 @@ public class UserService {
 		{
 			utrepo.deleteById(id);
 		}
+		public User getById(int id)
+		{
+			return utrepo.findById(id).get();
+		}
 }

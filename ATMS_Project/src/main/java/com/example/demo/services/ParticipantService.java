@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.Participant;
+import com.example.demo.entities.User;
 import com.example.demo.repositories.ParticipantRepository;
 
 @Service
@@ -15,6 +16,10 @@ public class ParticipantService {
 	public Participant saveparticipant(Participant p)
 	{
 		return prepo.save(p);
+	}
+	public Participant getParticipant(User u)
+	{
+		return prepo.getParticipant(u);
 	}
 
 }

@@ -1,5 +1,19 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 export default function ParticipantHome(){
+
+  const [participant , setParticipant] = useState([]);
+  useEffect(()=>{
+    const userid = JSON.parse(localStorage.getItem("loggedUser"));
+    console.log(userid);
+    fetch("http://localhost:8080/getParticipant?user_id="+userid.user_id)
+    .then(resp=>resp.json())
+    .then(obj=>{
+      console.log(obj);
+      localStorage.setItem("loggedParticipant",JSON.stringify(obj))
+      setParticipant(obj);
+    })
+  },[]);
 
 return (
     <div>
@@ -30,7 +44,8 @@ return (
           </ul>
         </div>
       </nav>
-    <h1>Participant Home</h1>
+    <h1>PARTICIPANT HOME</h1>
+    <h3>WELCOME {participant.first_name}</h3>
 
     </div>
 )
