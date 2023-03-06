@@ -3,7 +3,7 @@ package com.example.demo.entities;
 import java.sql.Date;
 
 public class ParticipantReg {
-	
+
 	int question_id;
 	String user_name, password, answer, first_name, last_name, gender, city, mobile, email;
 	Date birthdate;
@@ -75,5 +75,9 @@ public class ParticipantReg {
 	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
 	}
-
+	
+	
+	
+	
+	
 }

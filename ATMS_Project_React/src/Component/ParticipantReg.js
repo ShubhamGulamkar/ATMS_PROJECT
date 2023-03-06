@@ -1,9 +1,11 @@
-import {useReducer , useState, useEffect} from "react";
+import { useEffect, useReducer, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-function ParticipantReg()
-{
-    const init ={
-        first_name:{value:"",touched:false,valid:false,error:""},
+
+function ParticipantReg() {
+
+    const init = {
+        first_name: { value: "", touched: false, valid: false, error: "" },
         last_name: { value: "", touched: false, valid: false, error: "" },
         email: { value: "", touched: false, valid: false, error: "" },
         birthdate: { value: "", touched: false, valid: false, error: "" },
@@ -17,48 +19,50 @@ function ParticipantReg()
         //confirmpassword: { value: "", touched: false, valid: false, error: "" },
         //status:1,
         formvalid: false
-
     }
-    const reducer = (state ,action) =>{
-        switch (action.type){
+
+
+
+    const reducer = (state, action) => {
+        switch (action.type) {
             case 'update':
-                const { name,value,touched,valid,error,formvalid } = action.data
-                return { ...state, [name]: value, formvalid}
-                 //return { ...state, [name]: { value, touched, valid, error }, formvalid }
+                const { name, value, touched, valid, error, formvalid } = action.data
+                //console.log(formvalid)
+                return { ...state, [name]: value, formvalid }
+                //return { ...state, [name]: { value, touched, valid, error }, formvalid }
 
             case 'reset':
                 return init;
+
         }
     }
 
-    const[state ,dispatch] = useReducer(reducer,init);
-    const[pwdtype,setPwdtype]=useState("password");
+    const [state, dispatch] = useReducer(reducer, init);
+    const [pwdtype, setPwdtype] = useState("password");
     const [allque, setAllque] = useState([]);
+    const navigate=useNavigate();
 
     //To fetch question List
     useEffect(()=>{
-        fetch("http://localhost:8080/getQueList")
-        .then(resp => resp.json()) 
-        .then(que => setAllque(que))
-        }, []);
+                    fetch("http://localhost:8080/getQueList")
+                    .then(resp => resp.json()) 
+                    .then(que => setAllque(que))
+                    }, []);
 
-
-    const validateData = (name , value) => {
+    const validateData = (name, value) => {
         let valid = false;
         let error = "";
-        switch(name) {
-            case 'first_name' : var pattern = /^[A-Z][a-z]{2,15}$/
-            if(pattern.test(value))
-            {
-                valid = "true";
-                error ="";
-            }
-            else
-            {
-                valid="false";
-                error="first name invalid";
-            }
-            break;
+        switch (name) {
+            case 'first_name': var pattern = /^[A-Z][a-z]{2,15}$/
+                if (pattern.test(value)) {
+                    valid = true;
+                    error = "";
+                }
+                else {
+                    valid = false;
+                    error = "First name invalid"
+                }
+                break;
             case 'last_name': var pattern = /^[A-Z][a-z]{2,15}$/
                 if (pattern.test(value)) {
                     valid = true;
@@ -118,25 +122,24 @@ function ParticipantReg()
         return { valid, error };
     }
 
-    const handleChange = (name , value) => {
-        const { valid,error } = validateData (name,value)
+    const handleChange = (name, value) => {
+        const { valid, error } = validateData(name, value)
         let formvalid = true;
-         /*if(state.firstName.valid === true && state.lastName.valid === true && state.email.valid === true && state.password.valid === true && state.confirmpassword.valid === true)
+        /*if(state.firstName.valid === true && state.lastName.valid === true && state.email.valid === true && state.password.valid === true && state.confirmpassword.valid === true)
             formvalid = true;*/
-            for(const key in state)
-            {
-                console.log(key + " : " + state[key].valid)
-                if(state[key].valid == false)
-                {
-                    formvalid = false;
-                    break;
-                }
+        for (const key in state) {
+            console.log(key + " : " + state[key].valid)
+            if (state[key].valid === false) {
+                formvalid = false;
+                break;
             }
-            console.log(formvalid)
-            dispatch({ type: 'update', data: { name, value  } })
-            //dispatch({ type: 'update', data: { name, value, touched: true, valid, error, formvalid } })
+        }
+        console.log(formvalid)
+        dispatch({ type: 'update', data: { name, value  } })
+        //dispatch({ type: 'update', data: { name, value, touched: true, valid, error, formvalid } })
     }
-     // const onFocusout = (name, value) => {
+
+    // const onFocusout = (name, value) => {
     //     const { valid, error } = validateData(name, value)
     //     let formvalid = true;
     //     /*if(state.firstName.valid === true && state.lastName.valid === true && state.email.valid === true && state.password.valid === true && state.confirmpassword.valid === true)
@@ -155,26 +158,51 @@ function ParticipantReg()
     const sendData = (e) => {
         e.preventDefault();
         console.log(state);
+        //oject for REST Api 
         const reqOptions = {
-            method : 'POST',
-            headers : { 'content-type':'application/json' },
-            body :JSON.stringify(state)
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(state)
+                // user_name: user.user_name,
+                // password: user.password
+        
         }
+    
         fetch("http://localhost:8080/regParticipant", reqOptions)
-        .then(resp => resp.text())
+        // .then(resp => resp.text())
+        // alert("Account req raised");
+        .then(resp=>{
+            if(resp.ok)
+            {
+                alert("Registration Successfull!!!!");
+                navigate("/login");
+                //return resp.text();
+
+            }
+            else{
+                throw new Error("server error");
+
+            }
+            
+        })
+        .catch((error)=>alert("server error "));
     }
-    return(
+
+    return (
         <div>
             <h3>Participant Registration</h3>
             <div className="container">
+
                 <form>
+
                     <div className="row">
                         <div className="col-md-6">
-                            <label htmlFor="first_name">First Name : </label>
+                            <label htmlFor="first_name"> First Name : </label>
                             <input type="text" name="first_name" className="form-control" placeholder="First Name"
-                                onChange ={(e)=>handleChange("first_name",e.target.value)}/>
-                            <div className="error-msg">{state.first_name.error}</div>
+                                onChange={(e) => handleChange("first_name", e.target.value)} />
+                            <div className="error-msg"> {state.first_name.error}</div>
                         </div>
+
                         <div className="col-md-6">
                             <label htmlFor="last_name"> Last Name : </label>
                             <input type="text" name="last_name" className="form-control" placeholder="Last Name"
@@ -183,6 +211,7 @@ function ParticipantReg()
                         </div>
                         {/* onChange={handleChange("last_name")} />    */}
                     </div>
+
                     <div className="row">
                         <div className="col-md-12">
                             <label htmlFor="email"> Email : </label>
@@ -297,15 +326,18 @@ function ParticipantReg()
                             <div className="error-msg"> {state.confirmpassword.error}</div>
                         </div>
                     </div>  */}
+                    
                     <div className="mb-3">
-                        <button type="submit" disabled={state.formvalid} onClick={(e)=>{sendData(e)}}>Create Account</button>
+                        <button type="submit" disabled={state.formvalid} onClick={(e)=>{sendData(e)}}>Create Account</button>  
                     </div>
+
                 </form>
                 {JSON.stringify(state)}
             </div>
-
+            {/* < div>
+            <Link to="/" className='nav-link px-3'>Click here to login &nbsp;&nbsp;&nbsp;&nbsp; </Link>
+            </div>            */}
         </div>
     )
-
 }
 export default ParticipantReg;

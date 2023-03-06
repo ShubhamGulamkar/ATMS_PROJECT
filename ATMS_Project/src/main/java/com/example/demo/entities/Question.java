@@ -2,18 +2,18 @@ package com.example.demo.entities;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="question")
 public class Question {
-	
+
 	@Id
 	int question_id;
 	String question;
@@ -25,16 +25,18 @@ public class Question {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	//registration
+	public Question(int question_id) {
+		
+		this.question_id = question_id;
+	}
+
 	public Question(int question_id, String question) {
-		super();
+		
 		this.question_id = question_id;
 		this.question = question;
 	}
-	//registration
-		public Question(int question_id) {
-			
-			this.question_id = question_id;
-		}
 	public int getQuestion_id() {
 		return question_id;
 	}
@@ -47,5 +49,5 @@ public class Question {
 	public void setQuestion(String question) {
 		this.question = question;
 	}
-
+	
 }

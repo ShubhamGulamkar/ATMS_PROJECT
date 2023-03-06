@@ -3,17 +3,18 @@ package com.example.demo.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entities.User_type;
-import com.example.demo.repositories.UserTypeRepository;
+import com.example.demo.entities.UserType;
+import com.example.demo.repositories.UserTypeRepositories;
 
 @Service
 public class UserTypeService {
 
 	@Autowired
-	UserTypeRepository urepo;
+	UserTypeRepositories utrepo;
 	
-	public User_type getTypeId(int id)
+	public UserType getTypeId(int id)
 	{
-		return urepo.findById(id).get();
+		return utrepo.findById(id).get();
 	}
+	
 }

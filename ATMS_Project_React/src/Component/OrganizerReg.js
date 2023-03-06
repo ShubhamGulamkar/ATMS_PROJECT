@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function OrganizerReg(){
 
@@ -36,6 +37,7 @@ function OrganizerReg(){
     const [state, dispatch] = useReducer(reducer, init);
     const [pwdtype, setPwdtype] = useState("password");
     const [allque, setAllque] = useState([]);
+    const navigate=useNavigate();
 
     //To fetch question List
     useEffect(()=>{
@@ -135,8 +137,23 @@ function OrganizerReg(){
         }
     
         fetch("http://localhost:8080/regOrganizer", reqOptions)
-        .then(resp => resp.text())
-        alert("Account req raised");
+        // .then(resp => resp.text())
+        // alert("Account req raised");
+        .then(resp=>{
+            if(resp.ok)
+            {
+                alert("Request raised to Approval.");
+                navigate("/");
+                //return resp.text();
+
+            }
+            else{
+                throw new Error("server error");
+
+            }
+            
+        })
+        .catch((error)=>alert("server error "));
     }
 
     return(

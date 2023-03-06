@@ -1,6 +1,5 @@
 package com.example.demo.entities;
 
-
 public class OrganizerReg {
 
 	int question_id;
@@ -66,4 +65,6 @@ public class OrganizerReg {
 				+ ", answer=" + answer + ", organization_name=" + organization_name + ", registration_no="
 				+ registration_no + ", city=" + city + ", mobile=" + mobile + ", email=" + email + "]";
 	}
+	
+	
 }

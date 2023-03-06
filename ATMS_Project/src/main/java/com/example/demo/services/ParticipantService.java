@@ -5,21 +5,23 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.Participant;
 import com.example.demo.entities.User;
-import com.example.demo.repositories.ParticipantRepository;
+import com.example.demo.repositories.ParticipantRepositories;
 
 @Service
 public class ParticipantService {
 	
 	@Autowired
-	ParticipantRepository prepo;
+	ParticipantRepositories prepo;
 	
-	public Participant saveparticipant(Participant p)
+	//registration
+	public Participant saveParticipant(Participant p)
 	{
 		return prepo.save(p);
 	}
+	
+	//logged in participant
 	public Participant getParticipant(User u)
 	{
 		return prepo.getParticipant(u);
 	}
-
 }
